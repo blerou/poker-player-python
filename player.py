@@ -1,6 +1,6 @@
 
 class Player:
-    VERSION = "vakvarju brutal player v6"
+    VERSION = "vakvarju brutal player v7"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -26,7 +26,7 @@ class Player:
             return call + extra * 3
         elif self.has_pair(ranks):
             return call + extra * 2
-        elif call > pot:
+        elif call > (pot / 3):
             return 0
         # elif call > my['bet'] * 2:
         #     return 0
