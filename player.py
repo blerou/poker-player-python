@@ -1,14 +1,14 @@
 import random
 
 class Player:
-    VERSION = "vakvarju brutal player v12"
+    VERSION = "vakvarju brutal player v13"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
         pot = game_state['pot']
 
         call = game_state['current_buy_in'] - my['bet']
-        extra = max(pot / 2, game_state['minimum_raise'])
+        extra = game_state['minimum_raise']
 
         ranks = dict()
         suits = dict()
@@ -24,18 +24,14 @@ class Player:
                 suits[card['suit']] = [card['rank']]
 
         r = random.randint(0, 99)
-        if self.has_set(ranks):
-            return call + extra * 3
-        elif self.has_pair(ranks):
-            return call + extra * 2
+        if self.has_set(ranks) or self.has_pair(ranks):
+            return call + extra
         elif pot > 200 and call > (pot / 3):
             if r < 10:
                 return call
             else:
                 return 0
-            # return 0
         else:
-            # return 0
             if r < 10:
                 return 0
             elif r < 70:
