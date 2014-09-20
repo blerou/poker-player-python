@@ -3,13 +3,13 @@ import random
 converter={'J':11,'Q':12,'K':13,'A':14}
 
 def rankValue(rank):
-	if rank.isdigit():
-		return int(rank)
-	elif rank in converter.keys():
-		return converter[rank]
+    if rank.isdigit():
+        return int(rank)
+    elif rank in converter.keys():
+        return converter[rank]
 
 class Player:
-    VERSION = "vakvarju brutal player v16"
+    VERSION = "vakvarju brutal player v17"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -21,7 +21,7 @@ class Player:
         ranks = dict()
         suits = dict()
         cards = game_state['community_cards'] + my['hole_cards']
-		
+
         for card in cards:
             rank=rankValue(card['rank'])
             if rank in ranks:
@@ -38,22 +38,30 @@ class Player:
 
         r = random.randint(0, 99)
 
-        if self.has_straight(ranks) or self.has_set(ranks) or self.has_pair(ranks):
-            return call + extra
-        elif pot > 200 and call > (pot / 3):
-            if r < 10:
-                return call
-            else:
-                return 0
-        else:
-            if r < 10:
-                return 0
-            elif r < 70:
-                return call + extra
-            else:
-                return call
+        straight = self.straight(ranks)
+        pairs = self.pairs(ranks)
 
-    def has_straight(self, ranks):
+        if straight or self.has_poker(ranks):
+            return call + my['stack']
+
+        if self.has_set(ranks) or pairs:
+            return call + extra
+
+        if pot > 200 and call > (pot / 3):
+            if r < 10:
+                return call
+            else:
+                return 0
+
+        if r < 10:
+            return 0
+        elif r < 70:
+            return call + extra
+        else:
+            return call
+
+
+    def straight(self, ranks):
         x = sorted(ranks.keys())
         if len(x) < 5:
             return None
@@ -65,13 +73,19 @@ class Player:
             return x[6]
         return None
 
+    def has_poker(self, ranks):
+        for r, s in ranks.iteritems():
+            if len(s) == 4:
+                return True
+        return False
+
     def has_set(self, ranks):
         for r, s in ranks.iteritems():
             if len(s) == 3:
                 return r
         return None
 
-    def has_pair(self, ranks):
+    def pairs(self, ranks):
         ps = []
         for r, s in ranks.iteritems():
             if len(s) == 2:
@@ -93,11 +107,11 @@ def test_bet():
             'bet': 10,
                 'hole_cards': [
                     {
-                        'rank': 'a',
+                        'rank': 'A',
                         'suit': 'x'
                     },
                     {
-                        'rank': 'b',
+                        'rank': '4',
                         'suit': 'y'
                     }
                 ]
@@ -105,11 +119,11 @@ def test_bet():
         ],
         'community_cards': [
                 {
-                    'rank': 'a',
+                    'rank': 'A',
                     'suit': 'x'
                 },
                 {
-                    'rank': 'b',
+                    'rank': '6',
                     'suit': 'y'
                 }
         ]
