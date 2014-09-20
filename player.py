@@ -8,28 +8,28 @@ def rankValue(rank):
     elif rank in converter.keys():
         return converter[rank]
 
-def ranks_suites(cards):
-    ranks = dict()
-    suits = dict()
+def ranks(cards):
+    rs = dict()
     for card in cards:
         rank=rankValue(card['rank'])
-        if rank in ranks:
-            ranks[rank].append(card['suit'])
+        if rank in rs:
+            rs[rank].append(card['suit'])
         else:
-            ranks[rank] = [card['suit']]
-        if card['suit'] in suits:
-            suits[card['suit']].append(rank)
-        else:
-            suits[card['suit']] = [rank]
-    return ranks, suits
+            rs[rank] = [card['suit']]
+    return rs
 
-def call_in(perc, call):
+def call_in(perc, inside_val, outside_val=0):
     if random.randint(0, 99) < perc:
-        return call
-    return 0
+        return inside_val
+    return outside_val
+
+def percent(pairs, rank, below_val, above_val):
+    if pairs[0] < rank:
+        return below_val
+    return above_val
 
 class Player:
-    VERSION = "vakvarju brutal player v23"
+    VERSION = "vakvarju brutal player v24"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -41,27 +41,24 @@ class Player:
         comm_cards = game_state['community_cards']
         cards = comm_cards + my['hole_cards']
 
-        ranks, suits = ranks_suites(cards)
+        all_ranks = ranks(cards)
 
-        print "ranks", ranks
-        print "suits", suits
-
-        if self.has_straight(ranks) or self.has_poker(ranks) or self.has_set(ranks):
+        if self.has_straight(all_ranks) or self.has_poker(all_ranks) or self.has_set(all_ranks):
             return call + my['stack']
 
+        my_pairs = self.pairs(ranks(my['hole_cards']))
+        comm_pairs = self.pairs(ranks(comm_cards))
+        all_pairs = self.pairs(all_ranks)
 
-        pairs = self.pairs(ranks)
+        # two pairs
+        if my_pairs and comm_pairs:
+            return call_in(60, call+extra, call)
+        if len(all_pairs) >= 2:
+            return call_in(90, call+extra, call)
 
-        if pairs and len(pairs) == 2:
-            return call + extra
-
-        my_ranks, _ = ranks_suites(my['hole_cards'])
-
-        if self.pairs(my_ranks):
-            if pairs[0] < 10:
-                return call_in(20, call)
-            else:
-                return call + extra
+        # one pair
+        if my_pairs:
+            return call_in(percent(my_pairs, 10, 20, 70), call+extra, call)
 
         if pot > 200 and call > (pot / 3):
             return call_in(10, call)
