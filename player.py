@@ -1,10 +1,9 @@
 import random
 
 class Player:
-    VERSION = "vakvarju brutal player v11"
+    VERSION = "vakvarju brutal player v12"
 
     def betRequest(self, game_state):
-        random.seed()
         my = game_state['players'][game_state['in_action']]
         pot = game_state['pot']
 
@@ -30,23 +29,19 @@ class Player:
         elif self.has_pair(ranks):
             return call + extra * 2
         elif pot > 200 and call > (pot / 3):
-            # if r < 10:
-            #     return call
-            # else:
-            #     return 0
-            return 0
-        # elif call > my['bet'] * 2:
-        #     return 0
-        # elif len(cards) == 7:
-        #     return call
+            if r < 10:
+                return call
+            else:
+                return 0
+            # return 0
         else:
-            return 0
-            # if r < 10:
-            #     return 0
-            # elif r < 70:
-            #     return call + extra
-            # else:
-            #     return call
+            # return 0
+            if r < 10:
+                return 0
+            elif r < 70:
+                return call + extra
+            else:
+                return call
 
     def has_set(self, ranks):
         for s in ranks:
