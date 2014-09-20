@@ -29,7 +29,7 @@ def percent(pairs, rank, below_val, above_val):
     return above_val
 
 class Player:
-    VERSION = "vakvarju brutal player v26"
+    VERSION = "vakvarju brutal player v27"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -46,7 +46,8 @@ class Player:
         if self.has_straight(all_ranks) or self.has_poker(all_ranks) or self.has_set(all_ranks):
             return call + my['stack']
 
-        my_pairs = self.pairs(ranks(my['hole_cards']))
+        my_ranks = ranks(my['hole_cards'])
+        my_pairs = self.pairs(my_ranks)
         comm_pairs = self.pairs(ranks(comm_cards))
         all_pairs = self.pairs(all_ranks)
 
@@ -69,11 +70,8 @@ class Player:
         if not comm_pairs and all_pairs:
             return call_in(percent(all_pairs, 10, 20, 70), call+extra, call)
 
-        if pot > 200 and call > (pot / 3):
-            return call_in(10, call)
-
         if len(comm_cards) == 0:
-            return call_in(90, call)
+            return call_in(percent([max(my_ranks.keys())], 10, 20, 70), call)
         if len(comm_cards) == 3:
             return call_in(40, call)
         if len(comm_cards) == 4:
