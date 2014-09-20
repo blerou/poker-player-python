@@ -23,8 +23,10 @@ def ranks_suites(cards):
             suits[card['suit']] = [rank]
     return ranks, suits
 
+
+
 class Player:
-    VERSION = "vakvarju brutal player v20"
+    VERSION = "vakvarju brutal player v21"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -37,32 +39,24 @@ class Player:
         cards = comm_cards + my['hole_cards']
 
         ranks, suits = ranks_suites(cards)
-        cranks, csuits = ranks_suites(comm_cards)
 
         print "ranks", ranks
         print "suits", suits
 
+        if self.has_straight(ranks) or self.has_poker(ranks) or self.has_set(ranks):
+            return call + my['stack']
+
+
         r = random.randint(0, 99)
 
-        straight = self.straight(ranks)
         pairs = self.pairs(ranks)
 
-        if straight or self.has_poker(ranks):
-            return call + my['stack']
-
-        if self.has_set(ranks):
+        if pairs and len(pairs) == 2:
             return call + extra
 
-        if pairs and len(pairs) == 2:
-            return call + my['stack']
+        my_ranks, _ = ranks_suites(my['hole_cards'])
 
-        if self.pairs(cranks):
-            if r < 80:
-                return call
-            else:
-                return 0
-
-        if pairs:
+        if self.pairs(my_ranks):
             if pairs[0] < 10:
                 if r < 20:
                     return call
@@ -85,7 +79,7 @@ class Player:
             return call
 
 
-    def straight(self, ranks):
+    def has_straight(self, ranks):
         x = sorted(ranks.keys())
         if len(x) < 5:
             return None
