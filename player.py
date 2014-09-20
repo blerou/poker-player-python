@@ -29,11 +29,10 @@ def percent(pairs, rank, below_val, above_val):
     return above_val
 
 class Player:
-    VERSION = "vakvarju brutal player v28"
+    VERSION = "vakvarju brutal player v29"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
-        pot = game_state['pot']
 
         call = game_state['current_buy_in'] - my['bet']
         extra = game_state['minimum_raise'] * random.randint(1, 3)
@@ -60,18 +59,18 @@ class Player:
                 pairs = [ap[1]]
             else:
                 pairs = [ap[0]]
-            return call_in(percent(pairs, 10, 20, 70), call+extra, call)
+            return call_in(percent(pairs, 10, 20, 80), call+extra, call)
         if len(all_pairs) >= 2:
             return call_in(90, call+extra, call)
 
         # one pair
         if my_pairs:
-            return call_in(percent(my_pairs, 10, 20, 70), call+extra, call)
+            return call_in(percent(my_pairs, 10, 20, 80), call+extra, call)
         if not comm_pairs and all_pairs:
-            return call_in(percent(all_pairs, 10, 20, 70), call+extra, call)
+            return call_in(percent(all_pairs, 10, 20, 80), call+extra, call)
 
         if len(comm_cards) == 0:
-            return call_in(percent([min(my_ranks.keys())], 10, 20, 70), call)
+            return call_in(percent([min(my_ranks.keys())], 10, 20, 80), call)
         if len(comm_cards) == 3:
             return call_in(40, call)
         if len(comm_cards) == 4:
