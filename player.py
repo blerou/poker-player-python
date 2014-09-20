@@ -24,7 +24,7 @@ def ranks_suites(cards):
     return ranks, suits
 
 class Player:
-    VERSION = "vakvarju brutal player v19"
+    VERSION = "vakvarju brutal player v20"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -79,7 +79,7 @@ class Player:
 
         if r < 10:
             return 0
-        elif r < 70:
+        elif r < 50:
             return call + extra
         else:
             return call
