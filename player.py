@@ -1,7 +1,7 @@
 import random
 
 class Player:
-    VERSION = "vakvarju brutal player v15"
+    VERSION = "vakvarju brutal player v16"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -47,11 +47,11 @@ class Player:
         x = sorted(ranks.keys())
         if len(x) < 5:
             return None
-        if x[0] == x[4]:
+        if len(x) >= 5 and x[0] == x[4]:
             return x[4]
-        if x[1] == x[5]:
+        if len(x) >= 6 and x[1] == x[5]:
             return x[5]
-        if x[2] == x[6]:
+        if len(x) == 7 and x[2] == x[6]:
             return x[6]
         return None
 
