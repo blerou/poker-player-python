@@ -53,6 +53,13 @@ class Player:
         # two pairs
         if my_pairs and comm_pairs:
             return call_in(60, call+extra, call)
+        if len(all_pairs) >= 2 and comm_pairs:
+            ap = all_pairs[-2:]
+            if ap[0] == comm_pairs[0]:
+                pairs = [ap[1]]
+            else:
+                pairs = [ap[0]]
+            return call_in(percent(pairs, 10, 20, 70), call+extra, call)
         if len(all_pairs) >= 2:
             return call_in(90, call+extra, call)
 
@@ -101,7 +108,7 @@ class Player:
         for r, s in ranks.iteritems():
             if len(s) == 2:
                 ps.append(r)
-        return ps
+        return sorted(ps)
 
     def showdown(self, game_state):
         pass
