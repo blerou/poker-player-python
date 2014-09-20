@@ -23,10 +23,13 @@ def ranks_suites(cards):
             suits[card['suit']] = [rank]
     return ranks, suits
 
-
+def call_in(perc, call):
+    if random.randint(0, 99) < perc:
+        return call
+    return 0
 
 class Player:
-    VERSION = "vakvarju brutal player v21"
+    VERSION = "vakvarju brutal player v22"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -71,12 +74,13 @@ class Player:
             else:
                 return 0
 
-        if r < 10:
-            return 0
-        elif r < 50:
-            return call + extra
-        else:
-            return call
+        if len(comm_cards) == 0:
+            return call_in(90, call)
+        if len(comm_cards) == 3:
+            return call_in(40, call)
+        if len(comm_cards) == 4:
+            return call_in(10, call)
+        return 0
 
 
     def has_straight(self, ranks):
