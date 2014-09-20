@@ -29,7 +29,7 @@ def call_in(perc, call):
     return 0
 
 class Player:
-    VERSION = "vakvarju brutal player v22"
+    VERSION = "vakvarju brutal player v23"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
