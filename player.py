@@ -8,8 +8,23 @@ def rankValue(rank):
     elif rank in converter.keys():
         return converter[rank]
 
+def ranks_suites(cards):
+    ranks = dict()
+    suits = dict()
+    for card in cards:
+        rank=rankValue(card['rank'])
+        if rank in ranks:
+            ranks[rank].append(card['suit'])
+        else:
+            ranks[rank] = [card['suit']]
+        if card['suit'] in suits:
+            suits[card['suit']].append(rank)
+        else:
+            suits[card['suit']] = [rank]
+    return ranks, suits
+
 class Player:
-    VERSION = "vakvarju brutal player v18"
+    VERSION = "vakvarju brutal player v19"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -18,20 +33,11 @@ class Player:
         call = game_state['current_buy_in'] - my['bet']
         extra = game_state['minimum_raise'] * random.randint(1, 3)
 
-        ranks = dict()
-        suits = dict()
-        cards = game_state['community_cards'] + my['hole_cards']
+        comm_cards = game_state['community_cards']
+        cards = comm_cards + my['hole_cards']
 
-        for card in cards:
-            rank=rankValue(card['rank'])
-            if rank in ranks:
-                ranks[rank].append(card['suit'])
-            else:
-                ranks[rank] = [card['suit']]
-            if card['suit'] in suits:
-                suits[card['suit']].append(rank)
-            else:
-                suits[card['suit']] = [rank]
+        ranks, suits = ranks_suites(cards)
+        cranks, csuits = ranks_suites(comm_cards)
 
         print "ranks", ranks
         print "suits", suits
@@ -44,8 +50,26 @@ class Player:
         if straight or self.has_poker(ranks):
             return call + my['stack']
 
-        if self.has_set(ranks) or pairs:
+        if self.has_set(ranks):
             return call + extra
+
+        if pairs and len(pairs) == 2:
+            return call + my['stack']
+
+        if self.pairs(cranks):
+            if r < 80:
+                return call
+            else:
+                return 0
+
+        if pairs:
+            if pairs[0] < 10:
+                if r < 20:
+                    return call
+                else:
+                    return 0
+            else:
+                return call + extra
 
         if pot > 200 and call > (pot / 3):
             if r < 10:
