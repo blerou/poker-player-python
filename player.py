@@ -1,7 +1,7 @@
 import random
 
 class Player:
-    VERSION = "vakvarju brutal player v14"
+    VERSION = "vakvarju brutal player v15"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -23,6 +23,9 @@ class Player:
             else:
                 suits[card['suit']] = [card['rank']]
 
+        print "ranks", ranks
+        print "suits", suits
+
         r = random.randint(0, 99)
 
         if self.has_straight(ranks) or self.has_set(ranks) or self.has_pair(ranks):
@@ -42,19 +45,28 @@ class Player:
 
     def has_straight(self, ranks):
         x = sorted(ranks.keys())
-        return len(x) >= 5 and (x[0] == x[4] or x[1] == x[5] or x[2] == x[6])
+        if len(x) < 5:
+            return None
+        if x[0] == x[4]:
+            return x[4]
+        if x[1] == x[5]:
+            return x[5]
+        if x[2] == x[6]:
+            return x[6]
+        return None
 
     def has_set(self, ranks):
-        for s in ranks:
+        for r, s in ranks.iteritems():
             if len(s) == 3:
-                return True
-        return False
+                return r
+        return None
 
     def has_pair(self, ranks):
-        for s in ranks:
+        ps = []
+        for r, s in ranks.iteritems():
             if len(s) == 2:
-                return True
-        return False
+                ps.append(r)
+        return ps
 
     def showdown(self, game_state):
         pass
