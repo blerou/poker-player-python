@@ -1,5 +1,13 @@
 import random
 
+converter={'J':11,'Q':12,'K':13,'A':14}
+
+def rankValue(rank):
+	if rank.isdigit():
+		return int(rank)
+	elif rank in converter.keys():
+		return converter[rank]
+
 class Player:
     VERSION = "vakvarju brutal player v16"
 
@@ -13,15 +21,17 @@ class Player:
         ranks = dict()
         suits = dict()
         cards = game_state['community_cards'] + my['hole_cards']
+		
         for card in cards:
-            if card['rank'] in ranks:
-                ranks[card['rank']].append(card['suit'])
+			rank=rankValue(card['rank'])
+            if rank in ranks:
+                ranks[rank].append(card['suit'])
             else:
-                ranks[card['rank']] = [card['suit']]
+                ranks[rank] = [card['suit']]
             if card['suit'] in suits:
-                suits[card['suit']].append(card['rank'])
+                suits[card['suit']].append(rank)
             else:
-                suits[card['suit']] = [card['rank']]
+                suits[card['suit']] = [rank]
 
         print "ranks", ranks
         print "suits", suits
