@@ -9,14 +9,14 @@ def rankValue(rank):
         return converter[rank]
 
 class Player:
-    VERSION = "vakvarju brutal player v17"
+    VERSION = "vakvarju brutal player v18"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
         pot = game_state['pot']
 
         call = game_state['current_buy_in'] - my['bet']
-        extra = game_state['minimum_raise']
+        extra = game_state['minimum_raise'] * random.randint(1, 3)
 
         ranks = dict()
         suits = dict()
