@@ -29,7 +29,7 @@ def percent(pairs, rank, below_val, above_val):
     return above_val
 
 class Player:
-    VERSION = "vakvarju brutal player v24"
+    VERSION = "vakvarju brutal player v25"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
