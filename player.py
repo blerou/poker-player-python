@@ -50,8 +50,6 @@ class Player:
             return call + my['stack']
 
 
-        r = random.randint(0, 99)
-
         pairs = self.pairs(ranks)
 
         if pairs and len(pairs) == 2:
@@ -61,18 +59,12 @@ class Player:
 
         if self.pairs(my_ranks):
             if pairs[0] < 10:
-                if r < 20:
-                    return call
-                else:
-                    return 0
+                return call_in(20, call)
             else:
                 return call + extra
 
         if pot > 200 and call > (pot / 3):
-            if r < 10:
-                return call
-            else:
-                return 0
+            return call_in(10, call)
 
         if len(comm_cards) == 0:
             return call_in(90, call)
