@@ -29,7 +29,7 @@ def percent(pairs, rank, below_val, above_val):
     return above_val
 
 class Player:
-    VERSION = "vakvarju brutal player v25"
+    VERSION = "vakvarju brutal player v26"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -66,6 +66,8 @@ class Player:
         # one pair
         if my_pairs:
             return call_in(percent(my_pairs, 10, 20, 70), call+extra, call)
+        if not comm_pairs and all_pairs:
+            return call_in(percent(all_pairs, 10, 20, 70), call+extra, call)
 
         if pot > 200 and call > (pot / 3):
             return call_in(10, call)
