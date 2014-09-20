@@ -23,7 +23,7 @@ class Player:
         cards = game_state['community_cards'] + my['hole_cards']
 		
         for card in cards:
-			rank=rankValue(card['rank'])
+            rank=rankValue(card['rank'])
             if rank in ranks:
                 ranks[rank].append(card['suit'])
             else:
