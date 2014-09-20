@@ -1,6 +1,6 @@
 
 class Player:
-    VERSION = "vakvarju brutal player v4"
+    VERSION = "vakvarju brutal player v5"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -24,12 +24,12 @@ class Player:
         if self.has_set(ranks):
             return call + extra * 3
         elif self.has_pair(ranks):
-            return call + extra
+            return call + extra * 2
         else:
             if len(cards) == 7:
-                return 0
-            else:
                 return call
+            else:
+                return call + extra
 
     def has_set(self, ranks):
         for s in ranks:
