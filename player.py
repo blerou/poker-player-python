@@ -1,12 +1,13 @@
 
 class Player:
-    VERSION = "vakvarju brutal player v5"
+    VERSION = "vakvarju brutal player v6"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
+        pot = game_state['pot']
 
         call = game_state['current_buy_in'] - my['bet']
-        extra = max(game_state['pot'] / 2, game_state['minimum_raise'])
+        extra = max(pot / 2, game_state['minimum_raise'])
 
         ranks = dict()
         suits = dict()
@@ -25,11 +26,14 @@ class Player:
             return call + extra * 3
         elif self.has_pair(ranks):
             return call + extra * 2
+        elif call > pot:
+            return 0
+        # elif call > my['bet'] * 2:
+        #     return 0
+        elif len(cards) == 7:
+            return call
         else:
-            if len(cards) == 7:
-                return call
-            else:
-                return call + extra
+            return call + extra
 
     def has_set(self, ranks):
         for s in ranks:
@@ -80,4 +84,4 @@ def test_bet():
         ]
     }
 
-    assert 0 < Player().betRequest(gs)
+    assert 0 == Player().betRequest(gs)
