@@ -1,6 +1,6 @@
 
 class Player:
-    VERSION = "vakvarju brutal player v3"
+    VERSION = "vakvarju brutal player v4"
 
     def betRequest(self, game_state):
         my = game_state['players'][game_state['in_action']]
@@ -21,23 +21,25 @@ class Player:
             else:
                 suits[card['suit']] = [card['rank']]
 
-        # assert [] == suits
-
-        if len(cards) == 7:
-            if self.has_pair(ranks):
-                return call + extra
-            else:
-                return 0
+        if self.has_set(ranks):
+            return call + extra * 3
+        elif self.has_pair(ranks):
+            return call + extra
         else:
-            if self.has_pair(ranks):
-                return call + extra
+            if len(cards) == 7:
+                return 0
             else:
                 return call
 
+    def has_set(self, ranks):
+        for s in ranks:
+            if len(s) == 3:
+                return True
+        return False
 
     def has_pair(self, ranks):
         for s in ranks:
-            if len(s) >= 2:
+            if len(s) == 2:
                 return True
         return False
 
